@@ -10,7 +10,9 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "figlet": "^1.7.0",
     "inquirer": "^8.2.4",
+    "js-awe": "^1.0.66",
     "pg": "^8.11.5"
   }
 }
