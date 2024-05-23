@@ -1,5 +1,8 @@
 const inquirer = require('inquirer');
 const { Pool } = require('pg');
+const { consoleTable } = require('js-awe');
+const figlet = require('figlet');
+
 
 const pool = new Pool(
     {
@@ -13,8 +16,26 @@ const pool = new Pool(
 
 pool.connect();
 
+figlet("Employee", function (err, data) {
+    if(err) {
+        console.log("Something went wrong...");
+        console.dir(err);
+        return;
+    }
+    console.log(data);
+
+    figlet("Manager", function (err, data) {
+    if(err) {
+        console.log("Something went wrong...");
+        console.dir(err);
+        return;
+    }
+    console.log(data);
+});
+
+
 const questions = () => {
-    return inquirer
+    inquirer
         .prompt([
             {
                 type: 'list',
@@ -26,21 +47,22 @@ const questions = () => {
         .then((answers) => {
             if (answers.start === 'View All Departments') {
                 pool.query(`SELECT * FROM department`, (err, { rows }) => {
-                    if(err) {
+                    if (err) {
                         console.error(err.message);
                         return;
                     }
-                    console.table(rows);
+                    consoleTable(rows);
                     questions();
                 });
             } else if (answers.start === 'View All Roles') {
                 pool.query(`SELECT role.id, title, department.name AS department, salary FROM role JOIN department ON role.department_id = department.id`, (err, { rows }) => {
-                    console.table(rows);
+                    consoleTable(rows);
                     questions();
                 });
             } else if (answers.start === 'View All Employees') {
-                pool.query(`SELECT * FROM employee`, (err, { rows }) => {
-                    console.table(rows);
+                pool.query(`SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager FROM employee JOIN role ON employee.role_id = role.id JOIN department
+                ON department.id = role.department_id LEFT JOIN employee m ON employee.manager_id = m.id`, (err, { rows }) => {
+                    consoleTable(rows);
                     questions();
                 });
             } else if (answers.start === 'Add Department') {
@@ -113,3 +135,4 @@ const questions = () => {
 
 
 questions();
+});
