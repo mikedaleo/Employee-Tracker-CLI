@@ -72,7 +72,11 @@ const questions = () => {
                         name: 'department',
                         message: 'What is the name of the department?',
                     },
-                ]);
+                ]) 
+                .then((answers) => {
+                    pool.query(`INSERT INTO department`)
+                }) 
+            
             } else if (answers.start === 'Add Role') {
                 inquirer.prompt([
                     {
