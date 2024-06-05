@@ -1,19 +1,19 @@
 const inquirer = require('inquirer');
 const { Pool } = require('pg');
 const { consoleTable } = require('js-awe');
-const figlet = require('figlet');
+require('dotenv').config();
 
 
 const pool = new Pool(
     {
-        user: 'postgres',
-        password: 'password',
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
         host: 'localhost',
-        database: 'employees_db'
+        database: process.env.DB_NAME
     },
     console.log('Connected to the employees_db database.')
+    
 )
-
 pool.connect();
 
 const getDepartmentNames = () => {
